@@ -150,6 +150,20 @@
             font-size: 28px;
         }
 
+        /* Collapse Menu Styling */
+        .admin-sidebar .collapse {
+            display: none;
+        }
+
+        .admin-sidebar .collapse.show {
+            display: block;
+        }
+
+        .admin-sidebar #mobilMenu .nav-link {
+            padding: 8px 20px;
+            font-size: 14px;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .admin-sidebar {
@@ -181,12 +195,12 @@
                         <i class="bi bi-house-door"></i>
                         Dashboard
                     </a>
-                    <a class="nav-link" href="" data-bs-toggle="collapse" data-bs-target="#mobilMenu">
+                    <a class="nav-link" href="javascript:void(0)" data-bs-toggle="collapse" data-bs-target="#mobilMenu" role="button" aria-expanded="false">
                         <i class="bi bi-car-front"></i>
                         Data Mobil
                     </a>
                     <div id="mobilMenu" class="collapse ms-3">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="{{ url('/admin/mobil') }}">
                             <i class="bi bi-list"></i>
                             Daftar Mobil
                         </a>
@@ -196,15 +210,15 @@
                         </a>
                     </div>
 
-                    <a class="nav-link" href="#">
+                    <a class="nav-link" href="{{ url('/admin/pemesanan') }}">
                         <i class="bi bi-person-check"></i>
                         Pemesanan
                     </a>
-                    <a class="nav-link" href="#">
+                    <a class="nav-link" href="{{ url('/admin/pembayaran') }}">
                         <i class="bi bi-credit-card"></i>
                         Pembayaran
                     </a>
-                    <a class="nav-link" href="#">
+                    <a class="nav-link" href="{{ url('/admin/pengguna') }}">
                         <i class="bi bi-people"></i>
                         Pengguna
                     </a>
@@ -213,7 +227,7 @@
                         Laporan
                     </a>
                     <a class="nav-link" href="{{ url('/dashboard') }}">
-                        <i class="bi bi-file-earmark-pdf"></i>
+                        <i class="bi bi-home"></i>
                         Halaman Utama
                     </a>
                 </nav>

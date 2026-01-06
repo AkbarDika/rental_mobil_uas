@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -22,32 +23,40 @@ class AuthController extends Controller
     {
         $request->validate([
             'name' => 'required',
+            'username' => 'required|unique:users',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:5'
         ]);
 
+
         User::create([
             'name' => $request->name,
+            'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'user'
+            'role_id' => 2
         ]);
 
-        return redirect('/login')->with('success', 'Registrasi berhasil');
+
+
+        return redirect()->route('login')->with('success', 'Registrasi berhasil');
     }
 
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            if (Auth::user()->role == 'admin') {
+            if (Auth::user()->role_id == 1) {
                 return redirect('/admin');
             }
 
-            return redirect('/dashboard');
+            return redirect()->route('dashboard');
         }
 
         return back()->with('error', 'Email atau password salah');
@@ -56,10 +65,10 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         Auth::logout();
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/login');
+        return redirect()->route('login');
     }
 }
-
