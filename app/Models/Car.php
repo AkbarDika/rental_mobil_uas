@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Car extends Model
 {
-    protected $table = 'mobil'; // ⬅️ PENTING
+    protected $table = 'mobil';
 
     protected $fillable = [
         'kategori_id',
@@ -17,6 +17,10 @@ class Car extends Model
         'status',
         'foto'
     ];
+
+    // RELASI: Mobil → Kategori
+    public function kategori()
+    {
+        return $this->belongsTo(KategoriMobil::class, 'kategori_id');
+    }
 }
-
-

@@ -23,7 +23,7 @@ class CatalogController extends Controller
     public function show($id)
     {
         $car = Car::findOrFail($id);
-        $relatedCars = Car::where('kategori_mobil_id', $car->kategori_mobil_id)
+        $relatedCars = Car::where('kategori_id', $car->kategori_id)
                           ->where('id', '!=', $id)
                           ->take(4)
                           ->get();

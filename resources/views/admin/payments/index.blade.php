@@ -31,43 +31,7 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>#PAY001</td>
-                    <td>#PES001</td>
-                    <td>Budi Santoso</td>
-                    <td>Rp 1.500.000</td>
-                    <td>Transfer Bank</td>
-                    <td>06 Jan 2026</td>
-                    <td><span class="badge bg-success">Terbayar</span></td>
-                    <td>
-                        <button class="btn btn-sm btn-info"><i class="bi bi-eye"></i></button>
-                        <button class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>#PAY002</td>
-                    <td>#PES002</td>
-                    <td>Siti Nurhaliza</td>
-                    <td>Rp 1.350.000</td>
-                    <td>Kartu Kredit</td>
-                    <td>07 Jan 2026</td>
-                    <td><span class="badge bg-warning">Menunggu Konfirmasi</span></td>
-                    <td>
-                        <button class="btn btn-sm btn-info"><i class="bi bi-eye"></i></button>
-                        <button class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>#PAY003</td>
-                    <td>#PES003</td>
-                    <td>Ahmad Wijaya</td>
-                    <td>Rp 1.600.000</td>
-                    <td>E-Wallet</td>
-                    <td>01 Jan 2026</td>
-                    <td><span class="badge bg-success">Terbayar</span></td>
-                    <td>
-                        <button class="btn btn-sm btn-info"><i class="bi bi-eye"></i></button>
-                        <button class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></button>
-                    </td>
+                    
                 </tr>
             </tbody>
         </table>

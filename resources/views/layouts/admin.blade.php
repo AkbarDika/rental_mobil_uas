@@ -195,22 +195,13 @@
                         <i class="bi bi-house-door"></i>
                         Dashboard
                     </a>
-                    <a class="nav-link" href="javascript:void(0)" data-bs-toggle="collapse" data-bs-target="#mobilMenu" role="button" aria-expanded="false">
+                    
+                    <a class="nav-link" href="{{ url('/mobil') }}">
                         <i class="bi bi-car-front"></i>
-                        Data Mobil
+                        Daftar Mobil
                     </a>
-                    <div id="mobilMenu" class="collapse ms-3">
-                        <a class="nav-link" href="{{ url('/admin/mobil') }}">
-                            <i class="bi bi-list"></i>
-                            Daftar Mobil
-                        </a>
-                        <a class="nav-link" href="#">
-                            <i class="bi bi-plus-circle"></i>
-                            Tambah Mobil
-                        </a>
-                    </div>
-
-                    <a class="nav-link" href="{{ url('/admin/pemesanan') }}">
+                    
+                    <a class="nav-link" href="{{ url('/pemesanan') }}">
                         <i class="bi bi-person-check"></i>
                         Pemesanan
                     </a>

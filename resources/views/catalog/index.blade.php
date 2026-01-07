@@ -70,9 +70,9 @@
                                         <a href="{{ route('catalog.show', $car->id) }}" class="btn btn-primary btn-sm w-100 mb-2">
                                             <i class="bi bi-eye"></i> Lihat Detail
                                         </a>
-                                        <button class="btn btn-outline-primary btn-sm w-100">
+                                        <a href="{{ route('rental.create', $car->id) }}" class="btn btn-outline-primary btn-sm w-100">
                                             <i class="bi bi-cart"></i> Pesan Sekarang
-                                        </button>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
