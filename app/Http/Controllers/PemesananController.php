@@ -106,7 +106,6 @@ class PemesananController extends Controller
     {
         return view('admin.pemesanan.detail', compact('pemesanan'));
     }
-<<<<<<< HEAD
 
     /**
      * Halaman payment untuk customer setelah pemesanan dibuat
@@ -184,54 +183,4 @@ class PemesananController extends Controller
 
         return view('user.payment_failed', compact('pemesanan'));
     }
-
-
-
-    public function konfirmasi(Request $request)
-    {
-        $request->validate([
-            'mobil_id' => 'required',
-            'tanggal_mulai' => 'required|date',
-            'tanggal_selesai' => 'required|date',
-        ]);
-
-        $totalHari = Carbon::parse($request->tanggal_mulai)
-            ->diffInDays(Carbon::parse($request->tanggal_selesai));
-
-        $mobil = Mobil::findOrFail($request->mobil_id);
-        $totalHarga = $totalHari * $mobil->harga_sewa;
-
-        // 1️⃣ SIMPAN PEMESANAN
-        $pemesanan = Pemesanan::create([
-            'user_id' => auth()->id(),
-            'mobil_id' => $mobil->id,
-            'tanggal_pesan' => now(),
-            'tanggal_mulai' => $request->tanggal_mulai,
-            'tanggal_selesai' => $request->tanggal_selesai,
-            'total_harga' => $totalHarga,
-            'status_pemesanan' => 'pending',
-        ]);
-
-        // 2️⃣ KONFIG MIDTRANS
-        Config::$serverKey = config('midtrans.server_key');
-        Config::$isProduction = false;
-
-        $params = [
-            'transaction_details' => [
-                'order_id' => 'ORDER-' . $pemesanan->id,
-                'gross_amount' => $totalHarga,
-            ],
-            'customer_details' => [
-                'first_name' => auth()->user()->name,
-                'email' => auth()->user()->email,
-            ],
-        ];
-
-        $snapToken = Snap::getSnapToken($params);
-
-        return view('user.payment', compact('snapToken', 'pemesanan'));
-    }
-
-=======
->>>>>>> 610c2e48f256c68fdb3570274c4b99c8db95a5af
 }
