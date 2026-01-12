@@ -13,8 +13,7 @@ class Pemesanan extends Model
         'tanggal_mulai',
         'tanggal_selesai',
         'total_harga',
-        'status',
-        'status_pemesanan'
+        'status'
     ];
 
     protected $casts = [

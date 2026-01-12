@@ -87,6 +87,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/rental/{pemesananId}', [RentalController::class, 'update'])->name('rental.update');
     Route::post('/rental/{pemesananId}/cancel', [RentalController::class, 'cancel'])->name('rental.cancel');
 
+<<<<<<< HEAD
     // Payment Routes
     Route::get('/pemesanan/{pemesanan}/payment', [PemesananController::class, 'payment'])->name('pemesanan.payment');
     Route::get('/pemesanan/{pemesanan}/success', [PemesananController::class, 'paymentSuccess'])->name('pemesanan.success');
@@ -95,7 +96,6 @@ Route::middleware(['auth'])->group(function () {
     // Test Callback Routes (Development Only - Hapus di Production!)
     Route::get('/test/midtrans-callback', [TestCallbackController::class, 'index'])->name('test.midtrans-callback-form');
     Route::post('/test/midtrans-callback', [TestCallbackController::class, 'simulateCallback'])->name('test.midtrans-callback');
-
 });
 
 /*
@@ -125,6 +125,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::put('/pemesanan/{pemesanan}', [PemesananController::class, 'update'])->name('pemesanan.update');
     Route::delete('/pemesanan/{pemesanan}', [PemesananController::class, 'destroy'])->name('pemesanan.destroy');
 
+<<<<<<< HEAD
     
 
     Route::get('/kategori', [KategoriMobilController::class, 'index'])->name('kategori.index');
@@ -153,15 +154,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::delete('/user/{id}', [UserController::class, 'destroy'])
         ->name('user.destroy');
-
-
-    
-    
-    // Admin - Kelola Pengguna
-    
-});
-
-
 
 
 

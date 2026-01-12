@@ -106,6 +106,7 @@ class PemesananController extends Controller
     {
         return view('admin.pemesanan.detail', compact('pemesanan'));
     }
+<<<<<<< HEAD
 
     /**
      * Halaman payment untuk customer setelah pemesanan dibuat
@@ -231,4 +232,6 @@ class PemesananController extends Controller
         return view('user.payment', compact('snapToken', 'pemesanan'));
     }
 
+=======
+>>>>>>> 610c2e48f256c68fdb3570274c4b99c8db95a5af
 }
