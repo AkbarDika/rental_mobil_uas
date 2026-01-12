@@ -1,0 +1,8 @@
+{
+  "build": {
+    "builder": "nixpacks",
+    "nixpacksConfig": {
+      "buildCmd": "composer install --no-dev && php artisan config:cache && php artisan route:cache"
+    }
+  }
+}
