@@ -15,8 +15,5 @@ echo "3. Caching configuration..."
 php artisan config:cache
 php artisan route:cache
 
-echo "4. Running migrations..."
-php artisan migrate --force
-
-echo "5. Starting Laravel server..."
+echo "4. Starting Laravel server..."
 php artisan serve --host=0.0.0.0 --port=8080
