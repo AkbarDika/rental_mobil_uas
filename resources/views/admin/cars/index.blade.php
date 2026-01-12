@@ -8,9 +8,9 @@
 </div>
 
 <div class="admin-card">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h5 style="margin: 0; font-weight: bold;">Daftar Mobil</h5>
-        <button class="btn btn-primary btn-sm">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold mb-0">Daftar Mobil</h5>
+        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalTambah">
             <i class="bi bi-plus-circle"></i> Tambah Mobil
         </button>
     </div>
@@ -21,56 +21,160 @@
                 <tr>
                     <th>ID</th>
                     <th>Foto</th>
-                    <th>Merk & Model</th>
                     <th>Kategori</th>
+                    <th>Merk</th>
+                    <th>Model</th>
                     <th>Tahun</th>
-                    <th>Harga/Hari</th>
+                    <th>Plat</th>
+                    <th>Harga Sewa</th>
                     <th>Status</th>
-                    <th>Aksi</th>
+                    <th width="150">Aksi</th>
                 </tr>
             </thead>
             <tbody>
+                @forelse ($mobils as $mobil)
                 <tr>
-                    <td>#1</td>
-                    <td><img src="https://via.placeholder.com/50" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;"></td>
-                    <td>Honda Jazz</td>
-                    <td><span class="badge bg-info">Hatchback</span></td>
-                    <td>2023</td>
-                    <td>Rp 500.000</td>
-                    <td><span class="badge bg-success">Tersedia</span></td>
+                    <td>{{ $mobil->id }}</td>
                     <td>
-                        <button class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></button>
-                        <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                        @if ($mobil->foto)
+                            <img src="{{ asset('storage/'.$mobil->foto) }}" width="80">
+                        @else
+                            -
+                        @endif
+                    </td>
+                    <td>{{ $mobil->kategori->nama_kategori ?? '-' }}</td>
+                    <td>{{ $mobil->merk }}</td>
+                    <td>{{ $mobil->model }}</td>
+                    <td>{{ $mobil->tahun }}</td>
+                    <td>{{ $mobil->nomor_plat }}</td>
+                    <td>Rp {{ number_format($mobil->harga_sewa) }}</td>
+                    <td>
+                        <span class="badge {{ $mobil->status == 'tersedia' ? 'bg-success' : 'bg-danger' }}">
+                            {{ ucfirst($mobil->status) }}
+                        </span>
+                    </td>
+                    <td>
+                        <!-- Tombol Edit -->
+                        <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#edit{{ $mobil->id }}">
+                            Edit
+                        </button>
+
+                        <!-- Hapus -->
+                        <form action="{{ route('mobil.destroy', $mobil->id) }}" method="POST" class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button class="btn btn-danger btn-sm"
+                                onclick="return confirm('Hapus mobil ini?')">
+                                Hapus
+                            </button>
+                        </form>
                     </td>
                 </tr>
+
+                <!-- MODAL EDIT -->
+                <div class="modal fade" id="edit{{ $mobil->id }}" tabindex="-1">
+                    <div class="modal-dialog">
+                        <form action="{{ route('mobil.update', $mobil->id) }}" method="POST">
+                            @csrf
+                            @method('PUT')
+
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Edit Mobil</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+
+                                <div class="modal-body">
+                                    <select name="kategori_id" class="form-control mb-2" required>
+                                        @foreach ($kategori as $k)
+                                            <option value="{{ $k->id }}"
+                                                {{ $mobil->kategori_id == $k->id ? 'selected' : '' }}>
+                                                {{ $k->nama_kategori }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+
+                                    <input type="text" name="merk" class="form-control mb-2"
+                                        value="{{ $mobil->merk }}" required>
+
+                                    <input type="text" name="model" class="form-control mb-2"
+                                        value="{{ $mobil->model }}" required>
+
+                                    <input type="number" name="tahun" class="form-control mb-2"
+                                        value="{{ $mobil->tahun }}" required>
+
+                                    <input type="text" name="nomor_plat" class="form-control mb-2"
+                                        value="{{ $mobil->nomor_plat }}" required>
+
+                                    <input type="number" name="harga_sewa" class="form-control mb-2"
+                                        value="{{ $mobil->harga_sewa }}" required>
+
+                                    <select name="status" class="form-control">
+                                        <option value="tersedia"
+                                            {{ $mobil->status == 'tersedia' ? 'selected' : '' }}>
+                                            Tersedia
+                                        </option>
+                                        <option value="disewa"
+                                            {{ $mobil->status == 'disewa' ? 'selected' : '' }}>
+                                            Disewa
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button class="btn btn-success">Update</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                @empty
                 <tr>
-                    <td>#2</td>
-                    <td><img src="https://via.placeholder.com/50" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;"></td>
-                    <td>Toyota Avanza</td>
-                    <td><span class="badge bg-warning">MPV</span></td>
-                    <td>2022</td>
-                    <td>Rp 450.000</td>
-                    <td><span class="badge bg-success">Tersedia</span></td>
-                    <td>
-                        <button class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></button>
-                        <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
-                    </td>
+                    <td colspan="9" class="text-center">Data mobil belum tersedia</td>
                 </tr>
-                <tr>
-                    <td>#3</td>
-                    <td><img src="https://via.placeholder.com/50" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;"></td>
-                    <td>Nissan Livina</td>
-                    <td><span class="badge bg-warning">MPV</span></td>
-                    <td>2021</td>
-                    <td>Rp 400.000</td>
-                    <td><span class="badge bg-danger">Disewa</span></td>
-                    <td>
-                        <button class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></button>
-                        <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
-                    </td>
-                </tr>
+                @endforelse
             </tbody>
         </table>
+    </div>
+</div>
+
+<!-- MODAL TAMBAH -->
+<div class="modal fade" id="modalTambah" tabindex="-1">
+    <div class="modal-dialog">
+        <form action="{{ route('mobil.store') }}" method="POST">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Tambah Mobil</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <select name="kategori_id" class="form-control mb-2" required>
+                        <option value="">-- Pilih Kategori --</option>
+                        @foreach ($kategori as $k)
+                            <option value="{{ $k->id }}">{{ $k->nama_kategori }}</option>
+                        @endforeach
+                    </select>
+
+                    <input type="text" name="merk" class="form-control mb-2" placeholder="Merk" required>
+                    <input type="text" name="model" class="form-control mb-2" placeholder="Model" required>
+                    <input type="number" name="tahun" class="form-control mb-2" placeholder="Tahun" required>
+                    <input type="text" name="nomor_plat" class="form-control mb-2" placeholder="Plat" required>
+                    <input type="number" name="harga_sewa" class="form-control mb-2" placeholder="Harga Sewa" required>
+
+                    <select name="status" class="form-control">
+                        <option value="tersedia">Tersedia</option>
+                        <option value="disewa">Disewa</option>
+                    </select>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-primary">Simpan</button>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 

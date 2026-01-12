@@ -1,4 +1,4 @@
-/* @tailwind base; */
+@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
@@ -59,6 +59,7 @@
     transition: all 0.3s ease; /* Transisi halus saat hover */
     box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3); /* Shadow lembut biru */
     cursor: pointer;
+    
 }
 /* Efek Hover (Saat kursor di atas tombol) */
 .btn-gabung:hover {

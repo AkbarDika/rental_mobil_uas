@@ -171,7 +171,7 @@
 <!-- Spacer supaya konten tidak ketutup navbar -->
 {{-- <div style="height: 90px;"></div> --}}
 
-<main>
+<main style="margin:0 0 0 0 !important;padding:3.5% 0 0 0 !important;">
     @yield('content')
 </main>
 

@@ -4,7 +4,7 @@
 
 <!-- Breadcrumb -->
 <nav aria-label="breadcrumb" style="padding: 20px 0; background: #f5f5f5;">
-    <div class="container">
+    <div class="container-sm">
         <ol class="breadcrumb mb-0">
             <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Beranda</a></li>
             <li class="breadcrumb-item"><a href="{{ route('catalog.index') }}">Katalog</a></li>
@@ -14,7 +14,7 @@
 </nav>
 
 <section id="detail-catalog" style="padding: 60px 0;">
-    <div class="container">
+    <div class="container-sm">
         <div class="row">
             <!-- Gambar -->
             <div class="col-lg-6 mb-4">
@@ -124,9 +124,9 @@
 
                     <!-- Tombol Aksi -->
                     <div class="d-grid gap-2">
-                        <button class="btn btn-primary btn-lg mb-2" data-bs-toggle="modal" data-bs-target="#modalBooking">
+                        <a href="{{ route('rental.create', $car->id) }}" class="btn btn-primary btn-lg mb-2">
                             <i class="bi bi-calendar-check"></i> Pesan Sekarang
-                        </button>
+                        </a>
                         <button class="btn btn-outline-primary btn-lg">
                             <i class="bi bi-heart"></i> Tambah ke Favorit
                         </button>
@@ -177,51 +177,6 @@
         @endif
     </div>
 </section>
-
-<!-- Modal Booking -->
-<div class="modal fade" id="modalBooking" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Pesan {{ $car->merk }} {{ $car->model }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="mb-3">
-                        <label class="form-label">Tanggal Awal Sewa</label>
-                        <input type="date" class="form-control">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Tanggal Akhir Sewa</label>
-                        <input type="date" class="form-control">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Lokasi Penjemputan</label>
-                        <select class="form-select">
-                            <option selected>Pilih lokasi...</option>
-                            <option>Bandara Husein Sastranegara</option>
-                            <option>Pusat Kota</option>
-                            <option>Stasiun Kereta</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Catatan Tambahan</label>
-                        <textarea class="form-control" rows="3" placeholder="Tulis catatan jika ada..."></textarea>
-                    </div>
-                    <div class="alert alert-info">
-                        <strong>Estimasi Total:</strong> Rp {{ number_format($car->harga_sewa * 3, 0, ',', '.') }} (3 hari)
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-primary">Lanjutkan ke Pembayaran</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <style>
     .card:hover {
         transform: translateY(-5px);

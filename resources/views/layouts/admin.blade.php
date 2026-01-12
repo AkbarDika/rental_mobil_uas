@@ -195,30 +195,29 @@
                         <i class="bi bi-house-door"></i>
                         Dashboard
                     </a>
-                    <a class="nav-link" href="javascript:void(0)" data-bs-toggle="collapse" data-bs-target="#mobilMenu" role="button" aria-expanded="false">
+                    
+                    <a class="nav-link" href="{{ url('/mobil') }}">
                         <i class="bi bi-car-front"></i>
-                        Data Mobil
+                        Daftar Mobil
                     </a>
-                    <div id="mobilMenu" class="collapse ms-3">
-                        <a class="nav-link" href="{{ url('/admin/mobil') }}">
-                            <i class="bi bi-list"></i>
-                            Daftar Mobil
-                        </a>
-                        <a class="nav-link" href="#">
-                            <i class="bi bi-plus-circle"></i>
-                            Tambah Mobil
-                        </a>
-                    </div>
-
-                    <a class="nav-link" href="{{ url('/admin/pemesanan') }}">
+                    <a class="nav-link" href="{{ url('/kategori') }}">
+                        <i class="bi bi-car-front"></i>
+                        Kategori Mobil  
+                    </a>
+                    
+                    <a class="nav-link" href="{{ url('/pemesanan') }}">
                         <i class="bi bi-person-check"></i>
                         Pemesanan
                     </a>
-                    <a class="nav-link" href="{{ url('/admin/pembayaran') }}">
+                    <a class="nav-link" href="{{ url('/pembayaran') }}">
                         <i class="bi bi-credit-card"></i>
                         Pembayaran
                     </a>
-                    <a class="nav-link" href="{{ url('/admin/pengguna') }}">
+                    <a class="nav-link" href="{{ url('/pengembalian') }}">
+                        <i class="bi bi-credit-card"></i>
+                        Pengembalian
+                    </a>
+                    <a class="nav-link" href="{{ url('/user') }}">
                         <i class="bi bi-people"></i>
                         Pengguna
                     </a>

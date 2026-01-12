@@ -17,6 +17,7 @@
         }
         .auth-card {
             min-height: 90vh;
+            margin-top: 40px;
         }
         .auth-left {
             background: linear-gradient(135deg, #111827, #1f2937);
