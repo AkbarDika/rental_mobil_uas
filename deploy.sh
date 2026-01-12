@@ -1,19 +1,22 @@
 #!/bin/bash
 set -e
 
-echo "Installing dependencies..."
+echo "=== Starting Deployment ==="
+
+echo "1. Installing dependencies..."
 composer install --no-dev --optimize-autoloader
 
-echo "Generating app key..."
-php artisan key:generate --force
+echo "2. Generating app key if not exists..."
+if [ -z "$APP_KEY" ]; then
+    php artisan key:generate --force
+fi
 
-echo "Caching config..."
+echo "3. Caching configuration..."
 php artisan config:cache
-
-echo "Caching routes..."
 php artisan route:cache
 
-echo "Running migrations..."
+echo "4. Running migrations..."
 php artisan migrate --force
 
-echo "Deployment complete!"
+echo "5. Starting Laravel server..."
+php artisan serve --host=0.0.0.0 --port=8080
