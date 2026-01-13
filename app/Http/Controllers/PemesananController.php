@@ -7,20 +7,7 @@ use App\Models\Car as Mobil;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;{
-  "message": "[Mon Jan 12 17:14:58 2026] PHP 8.2.27 Development Server (http://0.0.0.0:8080) started",
-  "attributes": {
-    "level": "error"
-  },
-  "tags": {
-    "project": "95724567-cf27-4654-9cc5-211cf13e454e",
-    "environment": "adb4f732-fc0a-4f63-9dad-cb403db3cc56",
-    "service": "e21dc43d-fb2b-4419-a231-1a57ad6eb6a7",
-    "deployment": "771dbaa5-abb7-4096-be07-68b8b8006f5d",
-    "replica": "fe282579-e308-4333-8b2d-f553714707d6"
-  },
-  "timestamp": "2026-01-12T17:14:58.537701983Z"
-}
+use Carbon\Carbon;
 use Midtrans\Snap;
 use Midtrans\Config;
 

@@ -6,6 +6,7 @@ use App\Models\Pembayaran;
 use App\Models\Pemesanan;
 use Midtrans\Config;
 use Midtrans\Notification;
+use Illuminate\Support\Facades\Log;
 
 class MidtransController extends Controller
 {
@@ -21,10 +22,10 @@ class MidtransController extends Controller
     public function callback(Request $request)
     {
         try {
-            \Log::info('=== MIDTRANS CALLBACK RECEIVED ===');
-            \Log::info('Request method: ' . $request->method());
-            \Log::info('Request content type: ' . $request->header('Content-Type'));
-            \Log::info('Request all data: ' . json_encode($request->all()));
+            Log::info('=== MIDTRANS CALLBACK RECEIVED ===');
+            Log::info('Request method: ' . $request->method());
+            Log::info('Request content type: ' . $request->header('Content-Type'));
+            Log::info('Request all data: ' . json_encode($request->all()));
 
             // Setup config DULU sebelum Notification
             Config::$serverKey = config('midtrans.server_key');
@@ -39,7 +40,7 @@ class MidtransController extends Controller
             $paymentType = $request->input('payment_type') ?? $request->get('payment_type') ?? 'unknown';
             $grossAmount = $request->input('gross_amount') ?? $request->get('gross_amount');
 
-            \Log::info('Parsed callback data', [
+            Log::info('Parsed callback data', [
                 'order_id' => $orderId,
                 'transaction_status' => $transactionStatus,
                 'payment_type' => $paymentType,
@@ -48,7 +49,7 @@ class MidtransController extends Controller
 
             // Validasi data
             if (!$orderId || !$transactionStatus || !$grossAmount) {
-                \Log::error('Missing required callback data', [
+                Log::error('Missing required callback data', [
                     'order_id' => $orderId,
                     'transaction_status' => $transactionStatus,
                     'gross_amount' => $grossAmount,
@@ -62,15 +63,17 @@ class MidtransController extends Controller
             // Cek apakah pemesanan ada
             $pemesanan = Pemesanan::find($orderId);
             if (!$pemesanan) {
-                \Log::error('Order not found: ' . $orderId);
+                Log::error('Order not found: ' . $orderId);
                 return response()->json(['status' => 'error', 'message' => 'Order not found'], 404);
             }
 
             // Cek apakah pembayaran sudah ada
             $existingPayment = Pembayaran::where('pemesanan_id', $orderId)->first();
-            if ($existingPayment) {
-                \Log::info('Payment already processed for order: ' . $orderId);
-                return response()->json(['status' => 'ok', 'message' => 'Payment already processed']);
+
+            // Jika pembayaran sudah sukses sebelumnya, jangan update lagi (idempotency)
+            if ($existingPayment && $existingPayment->status == 'valid') {
+                Log::info('Payment already verified for order: ' . $orderId);
+                return response('ok', 200)->header('Content-Type', 'text/plain');
             }
 
             // Terjemahkan payment type
@@ -93,55 +96,54 @@ class MidtransController extends Controller
 
             $metodeDisplayName = $metodeMap[$paymentType] ?? ucwords(str_replace('_', ' ', $paymentType));
 
+            // Siapkan data pembayaran untuk create/update
+            $paymentData = [
+                'pemesanan_id' => $orderId,
+                'metode_pembayaran' => $metodeDisplayName,
+                'tanggal_bayar' => now()->toDateString(),
+                'jumlah_bayar' => $grossAmount,
+            ];
+
             // Handle berbagai status transaksi
             if ($transactionStatus == 'settlement' || $transactionStatus == 'capture') {
                 // Pembayaran berhasil
-                Pembayaran::create([
-                    'pemesanan_id' => $orderId,
-                    'metode_pembayaran' => $metodeDisplayName,
-                    'tanggal_bayar' => now()->toDateString(),
-                    'jumlah_bayar' => $grossAmount,
-                    'status' => 'valid',
-                ]);
-
-                Pemesanan::where('id', $orderId)
-                    ->update(['status' => 'disetujui']);
-
-                \Log::info('✅ Payment SUCCESSFUL for order: ' . $orderId);
+                $paymentData['status'] = 'valid';
+                
+                // Update status pemesanan
+                $pemesanan->update(['status' => 'disetujui']);
+                
+                Log::info('✅ Payment SUCCESSFUL for order: ' . $orderId);
             } elseif ($transactionStatus == 'pending') {
                 // Pembayaran masih pending
-                Pembayaran::create([
-                    'pemesanan_id' => $orderId,
-                    'metode_pembayaran' => $metodeDisplayName,
-                    'tanggal_bayar' => now()->toDateString(),
-                    'jumlah_bayar' => $grossAmount,
-                    'status' => 'menunggu',
-                ]);
-
-                \Log::info('⏳ Payment PENDING for order: ' . $orderId);
+                $paymentData['status'] = 'menunggu';
+                
+                Log::info('⏳ Payment PENDING for order: ' . $orderId);
             } elseif ($transactionStatus == 'deny' || $transactionStatus == 'cancel' || $transactionStatus == 'expire') {
                 // Pembayaran gagal/dibatalkan
-                Pembayaran::create([
-                    'pemesanan_id' => $orderId,
-                    'metode_pembayaran' => $metodeDisplayName,
-                    'tanggal_bayar' => now()->toDateString(),
-                    'jumlah_bayar' => $grossAmount,
-                    'status' => 'ditolak',
-                ]);
+                $paymentData['status'] = 'ditolak';
+                
+                // Update status pemesanan
+                $pemesanan->update(['status' => 'ditolak']);
 
-                Pemesanan::where('id', $orderId)
-                    ->update(['status' => 'ditolak']);
-
-                \Log::warning('❌ Payment FAILED/CANCELLED for order: ' . $orderId);
+                Log::warning('❌ Payment FAILED/CANCELLED for order: ' . $orderId);
             }
 
-            \Log::info('=== CALLBACK PROCESSED SUCCESSFULLY ===');
+            // Simpan atau Update
+            if (isset($paymentData['status'])) {
+                if ($existingPayment) {
+                    $existingPayment->update($paymentData);
+                } else {
+                    Pembayaran::create($paymentData);
+                }
+            }
+
+            Log::info('=== CALLBACK PROCESSED SUCCESSFULLY ===');
             // Midtrans expects plain text "ok" response
             return response('ok', 200)
                 ->header('Content-Type', 'text/plain');
 
         } catch (\Exception $e) {
-            \Log::error('Midtrans callback error: ' . $e->getMessage(), [
+            Log::error('Midtrans callback error: ' . $e->getMessage(), [
                 'exception' => $e,
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
