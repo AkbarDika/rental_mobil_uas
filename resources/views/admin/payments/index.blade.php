@@ -23,7 +23,6 @@
                     <th>Metode</th>
                     <th>Tanggal Bayar</th>
                     <th>Jumlah Bayar</th>
-                    <th>Bukti</th>
                     <th>Status</th>
                     <th>Aksi</th>
                 </tr>
@@ -35,7 +34,7 @@
                     <td>{{ $p->metode_pembayaran }}</td>
                     <td>{{ $p->tanggal_bayar }}</td>
                     <td>Rp {{ number_format($p->jumlah_bayar) }}</td>
-                    <td>
+                    <!-- <td>
                         @if ($p->bukti_bayar)
                             <a href="{{ asset('storage/'.$p->bukti_bayar) }}" target="_blank">
                                 <img src="{{ asset('storage/'.$p->bukti_bayar) }}"
@@ -44,7 +43,7 @@
                         @else
                             -
                         @endif
-                    </td>
+                    </td> -->
 
                     <td>
                         <span class="badge {{ $p->status == 'valid' ? 'bg-success' : 'bg-warning' }}">

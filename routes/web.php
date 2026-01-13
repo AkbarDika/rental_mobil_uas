@@ -14,6 +14,7 @@ use App\Http\Controllers\PengembalianController;
 use App\Http\Controllers\MidtransController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TestCallbackController;
+use App\Http\Controllers\RiwayatPesananController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,7 +32,6 @@ Route::get('/', function () {
 |--------------------------------------------------------------------------
 */
 Route::post('/midtrans/callback', [MidtransController::class, 'callback'])
-    ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class])
     ->name('midtrans.callback');
 
 /*
@@ -95,6 +95,7 @@ Route::middleware(['auth'])->group(function () {
     // Test Callback Routes (Development Only - Hapus di Production!)
     Route::get('/test/midtrans-callback', [TestCallbackController::class, 'index'])->name('test.midtrans-callback-form');
     Route::post('/test/midtrans-callback', [TestCallbackController::class, 'simulateCallback'])->name('test.midtrans-callback');
+    Route::get('/user/riwayat-pesanan', [RiwayatPesananController::class, 'index'])->name('user.riwayat_pesanan');
 });
 
 /*

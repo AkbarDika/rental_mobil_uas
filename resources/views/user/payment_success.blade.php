@@ -74,8 +74,8 @@
                             <a href="{{ route('dashboard') }}" class="btn btn-primary">
                                 <i class="bi bi-house"></i> Kembali ke Dashboard
                             </a>
-                            <a href="{{ route('catalog.index') }}" class="btn btn-outline-primary">
-                                <i class="bi bi-shop"></i> Lanjut Belanja
+                            <a href="{{ route('user.riwayat_pesanan') }}" class="btn btn-outline-primary">
+                                <i class="bi bi-shop"></i> Lihat Riwayat Transaksi
                             </a>
                         </div>
                     </div>
