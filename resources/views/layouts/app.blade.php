@@ -5,7 +5,9 @@
 
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=receipt_long" />
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <style>
         body {
             min-height: 200vh; /* hanya untuk demo scroll */
@@ -151,12 +153,14 @@
 
 <nav class="navbar navbar-expand-lg navbar-glass fixed-top">
     <div class="container-sm">
-        <a class="navbar-brand fw-bold" href="#">Dean RentCar</a>
+        <a class="navbar-brand fw-bold" href=" {{ route('dashboard') }}">Dean RentCar</a>
 
         <div class="ms-auto d-flex align-items-center">
+            <a href="{{ route('user.riwayat_pesanan') }}" class="me-3"><span class="material-symbols-outlined" style="font-size: 20px; padding-top:7px;">receipt_long</span></a>
             <span class="me-3">
                 {{ auth()->user()->name }}
             </span>
+
 
             <form action="{{ route('logout') }}" method="POST" class="d-inline">
                 @csrf

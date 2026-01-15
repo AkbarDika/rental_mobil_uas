@@ -96,6 +96,32 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/test/midtrans-callback', [TestCallbackController::class, 'index'])->name('test.midtrans-callback-form');
     Route::post('/test/midtrans-callback', [TestCallbackController::class, 'simulateCallback'])->name('test.midtrans-callback');
     Route::get('/user/riwayat-pesanan', [RiwayatPesananController::class, 'index'])->name('user.riwayat_pesanan');
+
+
+    Route::post('/user/pengembalian', [PengembalianController::class, 'storeUser'])
+        ->name('pengembalian.storeUser');
+
+});
+
+/*
+|--------------------------------------------------------------------------
+| Protected Routes - Petugas
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth', 'petugas'])->group(function () {
+    
+    // Petugas Dashboard
+    Route::get('/petugas', [App\Http\Controllers\PetugasController::class, 'index'])->name('petugas.dashboard');
+    
+    // Petugas - Kelola Pemesanan
+    Route::get('/petugas/pemesanan', [App\Http\Controllers\PetugasController::class, 'pemesanan'])->name('petugas.pemesanan');
+    Route::put('/petugas/pemesanan/{id}/konfirmasi', [App\Http\Controllers\PetugasController::class, 'konfirmasiPemesanan'])->name('petugas.pemesanan.konfirmasi');
+    
+    // Petugas - Kelola Pengembalian
+    Route::get('/petugas/pengembalian', [App\Http\Controllers\PetugasController::class, 'pengembalian'])->name('petugas.pengembalian');
+    Route::put('/petugas/pengembalian/{id}/konfirmasi', [App\Http\Controllers\PetugasController::class, 'konfirmasiPengembalian'])->name('petugas.pengembalian.konfirmasi');
+
 });
 
 /*

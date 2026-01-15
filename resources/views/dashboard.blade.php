@@ -1,129 +1,302 @@
 @extends('layouts.app')
 
 @section('content')
-@php
-use Illuminate\Support\Facades\Storage;
-@endphp
 
-<section id="section-1" >
-    <img src="{{ asset('storage/rental/fotomaster.png') }}" alt="" style="width: 100%; height: 400px;">
+<link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
 
-    <div class="container">
-        {{-- <h1 class="fw-bold mb-4 judul">RENTAL MOBIL JAYA</h1>
-        <p>Butuh alat transportasi saat berlibur bersama keluarga? RENTAL JAYA SOLUSINYA</p> --}}
+{{-- HERO --}}
+<section id="hero">
+    <div class="hero-overlay"></div>
+
+    <div class="container-sm hero-content">
+        <div class="row align-items-center">
+            <div class="reveal col-lg-7 col-md-8 text-white">
+                <div class="hero-badge">Deant Rental</div>
+                <h1 class="hero-title">
+                    Unlock the Freedom to<br>
+                    <span class="gradient-text">Experience Travel</span> Your Way
+                </h1>
+                <p class="hero-desc">
+                    Nikmati perjalanan dengan kendaraan berkualitas, harga transparan, 
+                    dan layanan terbaik. Mulai petualangan Anda bersama kami hari ini!
+                </p>
+
+                <div class="hero-buttons">
+                    <a href="{{ route('catalog.index') }}" class="btn-hero btn-primary-hero">
+                        Pilih Mobil Sekarang
+                    </a>
+                    <a href="#section-3" class="btn-hero btn-outline-hero">
+                        Tentang Kami
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 
+{{-- EXPLORE --}}
 <section id="section-2">
-    <div class="container-sm">
-        <h1 class="subjudul">Best Seller!</h1>
-        <div class="row mt-4">
+    <div class="container-sm reveal">
+        <div class="section-header">
+            <span class="section-badge">Penawaran Terbaik</span>
+            <h2 class="section-title">Jelajahi Armada Kami</h2>
+            <p class="section-subtitle">Pilih dari berbagai pilihan mobil berkualitas dengan harga terjangkau</p>
+        </div>
+
+        <div class="row mt-5 g-4">
             @foreach ($cars as $car)
-                <div class="col-md-3 mb-3">
-                    <div class="card h-100 shadow-sm">
-                        <img src="{{ asset('storage/' . $car->foto) }}"
-                            class="card-img-top"
-                            style="height:200px;object-fit:cover">
-                        <div class="card-body d-flex flex-column">
-                            <h5>{{ $car->merk }} {{ $car->model }}</h5>
-                            <p>Rp {{ number_format($car->harga_sewa,0,',','.') }} / hari</p>
-                            <a href="{{ route('rental.create', $car->id) }}" class="btn btn-primary mt-auto">Sewa Sekarang</a>    
+                <div class="col-xl-3 col-lg-4 col-md-6">
+                    <div class="car-card">
+                        <div class="car-img-wrapper">
+                            <img src="{{ asset('storage/' . $car->foto) }}" class="car-img" alt="{{ $car->merk }} {{ $car->model }}">
+                            <div class="car-badge">Tersedia</div>
+                        </div>
+
+                        <div class="card-body">
+                            <h5 class="car-name">{{ $car->merk }} {{ $car->model }}</h5>
+                            
+                            <div class="price-wrapper">
+                                <span class="price-label">Mulai dari</span>
+                                <div class="price">
+                                    Rp {{ number_format($car->harga_sewa,0,',','.') }}
+                                    <span class="price-unit">/ hari</span>
+                                </div>
+                            </div>
+
+                            <div class="btn-group-car">
+                                <a href="{{ route('rental.create', $car->id) }}" class="btn-rent-primary">
+                                    Sewa Sekarang
+                                </a>
+                                <a href="{{ route('catalog.show', $car->id) }}" class="btn-rent-outline">
+                                    Detail
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
             @endforeach
         </div>
-        <div class="row pb-5">
-            <div style="text-align: center; margin-top: 50px;">
-                <a href="{{ route('catalog.index') }}" class="btn-gabung">
-                    Lihat Selengkapnya
-                </a>
-            </div>
+
+        <div class="text-center mt-5">
+            <a href="{{ route('catalog.index') }}" class="btn-view-all">
+                Lihat Semua Mobil →
+            </a>
         </div>
-        <hr>
     </div>
 </section>
 
-<section id="section-3">
-    <div class="container-sm">
-        <h1 class="subjudul">Tentang Kami</h1>
-        <div class="row" style="padding-bottom: 100px">
-            <div class="col-6">
-                <img src="{{ asset('storage/rental/deanrent.png') }}" alt="Tentang" style="width: 600px">
+
+
+{{-- FITUR UNGGULAN --}}
+<section id="features">
+    <div class="container-sm reveal">
+        <div class="section-header">
+            <span class="section-badge">Keunggulan Kami</span>
+            <h2 class="section-title">Kenapa Pilih Kami?</h2>
+            <p class="section-subtitle">Kami memberikan pelayanan terbaik untuk kenyamanan perjalanan Anda</p>
+        </div>
+
+        <div class="row mt-5 g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-car"></i>
+                    </div>
+                    <h5>Armada Berkualitas</h5>
+                    <p>Kendaraan bersih, terawat secara rutin, dan siap menemani setiap perjalanan Anda dengan aman dan nyaman.</p>
+                </div>
             </div>
-            <div class="col-6">
-                <p class="mt-4 p-tentang"><b>RENTAL MOBIL DEAN </b> adalah penyedia layanan rental mobil terpercaya yang telah beroperasi sejak tahun 2010. Kami menyediakan berbagai jenis mobil berkualitas untuk memenuhi kebutuhan transportasi Anda, baik untuk keperluan pribadi, bisnis, maupun liburan. Dengan armada yang terawat dan layanan pelanggan yang ramah, kami berkomitmen untuk memberikan pengalaman rental mobil terbaik bagi setiap pelanggan kami.</p>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-stopwatch"></i>
+                    </div>
+                    <h5>Proses Cepat</h5>
+                    <p>Pemesanan online yang mudah, konfirmasi instan, dan proses pengambilan kendaraan yang praktis tanpa ribet.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h5>Asuransi Lengkap</h5>
+                    <p>Setiap kendaraan dilengkapi dengan asuransi komprehensif untuk ketenangan pikiran selama perjalanan Anda.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <h5>Support 24/7</h5>
+                    <p>Tim customer service kami siap membantu Anda kapan saja, 24 jam sehari dan 7 hari seminggu.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{{-- TESTIMONI / STAT --}}
+<section id="stats">
+    <div class="container-sm reveal">
+        <div class="section-header">
+            <span class="section-badge">Statistik</span>
+            <h2 class="section-title">Kenapa Pilih Kami?</h2>
+            <p class="section-subtitle">Kami memberikan pelayanan terbaik untuk kenyamanan perjalanan Anda</p>
+        </div>
+        <div class="row justify-content-center g-4">
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="stat-card">
+                    <div class="statistik-badge">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                    </div>
+                    <h2 class="stat-number">500+</h2>
+                    <p class="stat-label">Total Sewa</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="stat-card">
+                    <div class="statistik-badge">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="10" r="3"></circle>
+                            <path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 6.9 8 11.7z"></path>
+                        </svg>
+                    </div>
+                    <h2 class="stat-number">400+</h2>
+                    <p class="stat-label">Pelanggan Puas</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="stat-card">
+                    <div class="statistik-badge">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                        </svg>
+                    </div>
+                    <h2 class="stat-number">50+</h2>
+                    <p class="stat-label">Armada Mobil</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{{-- ABOUT --}}
+<section id="section-3">
+    <div class="container-sm reveal">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <div class="about-img-wrapper">
+                    <img src="{{ asset('storage/rental/deanrent.png') }}" class="img-fluid about-img" alt="Rental Mobil Dean">
+                    <div class="about-badge">
+                        <div class="badge-content">
+                            <span class="badge-number">15+</span>
+                            <span class="badge-text">Tahun<br>Pengalaman</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="about-content">
+                    <span class="section-badge">Tentang Kami</span>
+                    <h2 class="section-title text-start mb-4">Rental Mobil Dean</h2>
+                    <p class="about-text">
+                        <strong>RENTAL MOBIL DEAN</strong> adalah penyedia layanan rental mobil terpercaya 
+                        sejak tahun 2010. Kami berkomitmen untuk memberikan pengalaman terbaik dengan 
+                        armada berkualitas tinggi dan layanan pelanggan yang profesional.
+                    </p>
+                    <p class="about-text">
+                        Dengan pengalaman lebih dari satu dekade, kami telah melayani ribuan pelanggan 
+                        dengan kepuasan yang tinggi. Setiap kendaraan dipelihara dengan standar tertinggi 
+                        untuk kenyamanan dan keamanan perjalanan Anda.
+                    </p>
+                    
+                    <div class="about-features mt-4">
+                        <div class="about-feature-item">
+                            <span class="feature-check">✓</span>
+                            <span>Armada Terawat & Bersih</span>
+                        </div>
+                        <div class="about-feature-item">
+                            <span class="feature-check">✓</span>
+                            <span>Harga Kompetitif</span>
+                        </div>
+                        <div class="about-feature-item">
+                            <span class="feature-check">✓</span>
+                            <span>Layanan 24/7</span>
+                        </div>
+                        <div class="about-feature-item">
+                            <span class="feature-check">✓</span>
+                            <span>Proses Mudah & Cepat</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
 <style>
-    #section-1 h1 {
-    margin-top: 100px;
-    font-size: 48px;
-    font-weight: bold;
-    text-align: center;
-}
-
-#section-1 p {
-    font-size: 18px;
-    text-align: center;
-    margin-top: 10px;
-    padding-bottom: 120px;
-}
-#section-2 {
-    /* Gradasi dari biru muda sangat lembut ke putih murni */
-    background: linear-gradient(to bottom,  #ffffff 0%, #ebf5ff 100%);
-    padding-bottom: 80px ;
-}
-#section-3{
-    background: linear-gradient(to bottom,  #ebf5ff 0%, #ffffff 100%);
-    padding-bottom: 80px ;
-}
-
-.subjudul {
-    padding-top:50px;
-    padding-bottom: 40px;
-    font-size: 40px;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 20px;
-}
-.p-tentang{
-    font-size: 16px;
-    padding-bottom: 100px;
-}
-
-.btn-gabung {
-    background-color: #3498db; /* Warna Biru Muda Utama */
-    color: #ffffff;            /* Warna Teks Putih */
-    padding: 12px 30px;        /* Ukuran tombol */
-    border-radius: 50px;       /* Membuat tombol bulat (pill) */
-    border: none;              /* Menghilangkan border bawaan */
-    font-weight: 600;          /* Membuat teks sedikit tebal */
-    font-size: 16px;
-    display: inline-flex;      /* Agar icon dan teks sejajar */
+#hero {
+    position: relative;
+    min-height: 90vh;
+    background: url('{{ asset('storage/rental/herobg.png') }}') center/cover no-repeat;
+    display: flex;
     align-items: center;
-    gap: 10px;                 /* Jarak antara icon buku dan teks */
-    text-decoration: none;     /* Menghilangkan garis bawah link */
-    transition: all 0.3s ease; /* Transisi halus saat hover */
-    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3); /* Shadow lembut biru */
-    cursor: pointer;
-    
+    padding: 60px 0;
 }
-/* Efek Hover (Saat kursor di atas tombol) */
-.btn-gabung:hover {
-    background-color: #2980b9; /* Biru yang sedikit lebih gelap saat dihover */
-    transform: translateY(-3px); /* Tombol sedikit terangkat ke atas */
-    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.5); /* Shadow lebih tegas */
-    color: #ffffff;
+
+/* ANIMATION BASE */
+.reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.8s ease-out;
 }
-/* Efek Active (Saat tombol diklik) */
-.btn-gabung:active {
-    transform: translateY(-1px);
+
+/* SAAT MUNCUL */
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
 }
+
+/* OPTIONAL DELAY VARIANTS */
+.delay-1 { transition-delay: .1s; }
+.delay-2 { transition-delay: .2s; }
+.delay-3 { transition-delay: .3s; }
+.delay-4 { transition-delay: .4s; }
 
 </style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const reveals = document.querySelectorAll(".reveal");
+
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("active");
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.15
+    });
+
+    reveals.forEach(el => observer.observe(el));
+});
+</script>
+
 
 @endsection
