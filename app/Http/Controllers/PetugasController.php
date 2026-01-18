@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Pemesanan;
 use App\Models\Pengembalian;
+use App\Models\Denda;
 use Illuminate\Support\Facades\DB;
 
 class PetugasController extends Controller
@@ -67,10 +68,30 @@ class PetugasController extends Controller
             'status' => 'required|in:pending,disetujui,ditolak,selesai'
         ]);
 
-        $pemesanan = Pemesanan::findOrFail($id);
-        $pemesanan->update([
-            'status' => $request->status
-        ]);
+        $pemesanan = Pemesanan::with('details.mobil')->findOrFail($id);
+        
+        DB::transaction(function () use ($pemesanan, $request) {
+            $pemesanan->update([
+                'status' => $request->status
+            ]);
+
+            // Jika status disetujui, ubah status mobil jadi disewa
+            if ($request->status == 'disetujui') {
+                foreach ($pemesanan->details as $detail) {
+                    if ($detail->mobil) {
+                        $detail->mobil->update(['status' => 'disewa']);
+                    }
+                }
+            }
+            // Optional: Jika status ditolak/selesai, ubah status mobil jadi tersedia (jika logic bisnis membutuhkan)
+             elseif ($request->status == 'ditolak' || $request->status == 'selesai') {
+                foreach ($pemesanan->details as $detail) {
+                    if ($detail->mobil) {
+                        $detail->mobil->update(['status' => 'tersedia']);
+                    }
+                }
+            }
+        });
 
         return redirect()->back()->with('success', 'Status pemesanan berhasil diupdate');
     }
@@ -93,14 +114,46 @@ class PetugasController extends Controller
     public function konfirmasiPengembalian(Request $request, $id)
     {
         $request->validate([
-            'status_pengembalian' => 'required|in:pending,selesai,bermasalah'
+            'status_pengembalian' => 'required|in:pending,selesai,bermasalah',
+            'jenis_denda' => 'required_if:status_pengembalian,bermasalah|nullable|in:telat,masalah_unit',
+            'hari_telat' => 'required_if:jenis_denda,telat|nullable|integer|min:1',
+            'keterangan_denda' => 'required_if:jenis_denda,masalah_unit|nullable|string|max:150',
+            'total_denda' => 'required_if:jenis_denda,telat|required_if:jenis_denda,masalah_unit|nullable|numeric|min:0',
         ]);
 
         $pengembalian = Pengembalian::findOrFail($id);
-        $pengembalian->update([
-            'status_pengembalian' => $request->status_pengembalian
-        ]);
 
-        return redirect()->back()->with('success', 'Status pengembalian berhasil diupdate');
+        DB::transaction(function () use ($pengembalian, $request) {
+
+            $pengembalian->update([
+                'status_pengembalian' => $request->status_pengembalian
+            ]);
+
+            if ($request->status_pengembalian === 'bermasalah') {
+
+                Denda::where('pengembalian_id', $pengembalian->id_pengembalian)->delete();
+
+                $data = [
+                    'pengembalian_id' => $pengembalian->id_pengembalian,
+                    'jenis_denda' => $request->jenis_denda,
+                ];
+
+                if ($request->jenis_denda === 'telat') {
+                    $data['jumlah_hari_terlambat'] = $request->hari_telat;
+                    $data['tarif_denda_per_hari'] = 100000;
+                    $data['total_denda'] = $request->hari_telat * 100000;
+                }
+
+                if ($request->jenis_denda === 'masalah_unit') {
+                    $data['keterangan'] = $request->keterangan_denda ?? '-';
+                    $data['total_denda'] = $request->total_denda ?? 0;
+                }
+
+                Denda::create($data);
+            }
+        });
+
+        return back()->with('success', 'Pengembalian berhasil dikonfirmasi');
     }
+
 }

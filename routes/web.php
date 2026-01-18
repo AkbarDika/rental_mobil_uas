@@ -15,6 +15,8 @@ use App\Http\Controllers\MidtransController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TestCallbackController;
 use App\Http\Controllers\RiwayatPesananController;
+use App\Models\Car;
+use App\Http\Controllers\LaporanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,8 +25,19 @@ use App\Http\Controllers\RiwayatPesananController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    if (auth()->check()) {
+        return match (auth()->user()->role_id) {
+            1 => redirect()->route('admin.dashboard'),
+            4 => redirect()->route('petugas.dashboard'),
+            default => redirect()->route('dashboard'),
+        };
+    }
+
+    return view('landing', [
+        'cars' => Car::where('status', 'tersedia')->latest()->take(4)->get()
+    ]);
+})->name('landing');
+
 
 /*
 |--------------------------------------------------------------------------
@@ -177,4 +190,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::delete('/user/{id}', [UserController::class, 'destroy'])
         ->name('user.destroy');
+
+    // Laporan
+    Route::get('/laporan', [LaporanController::class, 'index'])->name('admin.laporan.index');
+    Route::get('/laporan/export-pesanan', [LaporanController::class, 'exportPesanan'])->name('admin.laporan.export-pesanan');
+    Route::get('/laporan/export-pembayaran', [LaporanController::class, 'exportPembayaran'])->name('admin.laporan.export-pembayaran');
+    Route::get('/laporan/export-pengembalian', [LaporanController::class, 'exportPengembalian'])->name('admin.laporan.export-pengembalian');
 });

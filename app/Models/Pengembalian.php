@@ -15,6 +15,7 @@ class Pengembalian extends Model
 
     protected $fillable = [
         'pemesanan_id',
+        'jenis',
         'tanggal_kembali',
         'kondisi_mobil',
         'catatan',
@@ -24,6 +25,11 @@ class Pengembalian extends Model
     public function pemesanan()
     {
         return $this->belongsTo(Pemesanan::class);
+    }
+
+    public function denda()
+    {
+        return $this->hasOne(Denda::class, 'pengembalian_id', 'id_pengembalian');
     }
 
     

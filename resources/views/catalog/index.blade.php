@@ -26,11 +26,11 @@
                         @endif
                     </div>
                     <div>
-                        <select class="form-select form-select-sm" style="width: auto;">
+                        <select id="sort-select" class="form-select form-select-sm" style="width: auto;">
                             <option value="">Urutkan...</option>
-                            <option value="price-asc">Harga: Rendah ke Tinggi</option>
-                            <option value="price-desc">Harga: Tinggi ke Rendah</option>
-                            <option value="newest">Terbaru</option>
+                            <option value="price-asc" {{ request('sort') == 'price-asc' ? 'selected' : '' }}>Harga: Rendah ke Tinggi</option>
+                            <option value="price-desc" {{ request('sort') == 'price-desc' ? 'selected' : '' }}>Harga: Tinggi ke Rendah</option>
+                            <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Terbaru</option>
                         </select>
                     </div>
                 </div>
@@ -64,7 +64,7 @@
 
                                     <div class="btn-group-car">
                                         <a href="{{ route('rental.create', $car->id) }}" class="btn-rent-primary">
-                                            Sewa Sekarang
+                                            Sewa 
                                         </a>
                                         <a href="{{ route('catalog.show', $car->id) }}" class="btn-rent-outline">
                                             Detail
@@ -195,6 +195,24 @@
     if (maxInput) {
         maxInput.addEventListener('input', function() {
             maxVal.textContent = new Intl.NumberFormat('id-ID').format(this.value);
+        });
+    }
+
+    // Logic Sorting JavaScript
+    const sortSelect = document.getElementById('sort-select');
+    if (sortSelect) {
+        sortSelect.addEventListener('change', function() {
+            const sortValue = this.value;
+            const url = new URL(window.location.href);
+            
+            if (sortValue) {
+                url.searchParams.set('sort', sortValue);
+            } else {
+                url.searchParams.delete('sort');
+            }
+            
+            // Tetap pertahankan parameter pencarian lain jika ada
+            window.location.href = url.toString();
         });
     }
 </script>

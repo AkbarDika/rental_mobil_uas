@@ -113,6 +113,9 @@
         @endforeach
         </tbody>
     </table>
+    <div class="pagination-container">
+        {{ $users->links() }}
+    </div>
 </div>
 
 {{-- MODAL TAMBAH --}}

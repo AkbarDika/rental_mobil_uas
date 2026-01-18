@@ -68,6 +68,14 @@ class Pemesanan extends Model
             return 'Selesai';
         }
 
+        if ($this->pembayaran->status === 'valid' && $this->status === 'pending') {
+            return 'Pending';
+        }
+
+        if ($this->pengembalian && $this->pengembalian->status_pengembalian === 'bermasalah') {
+            return 'Pengembalian Bermasalah';
+        }
+
         // 5. Default (sudah bayar, sedang aktif)
         return 'Sedang Disewa';
     }
@@ -78,7 +86,10 @@ class Pemesanan extends Model
         return match ($this->status_tampilan) {
             'Menunggu Pembayaran' => 'secondary',
             'Pengembalian Pending' => 'warning',
-            'Selesai' => 'info',
+            'Pending' => 'warning',
+            'Selesai' => 'success',
+            'Sedang Disewa' => 'info',
+            'Pengembalian Bermasalah' => 'danger',
             default => 'success',
         };
     }

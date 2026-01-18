@@ -11,7 +11,7 @@ class PengembalianController extends Controller
 {
     public function index()
     {
-        $pengembalian = Pengembalian::with('pemesanan')->get();
+        $pengembalian = Pengembalian::with('pemesanan')->paginate(10);
         $pemesanan = Pemesanan::all();
 
         return view('admin.pengembalian.index', compact('pengembalian', 'pemesanan'));

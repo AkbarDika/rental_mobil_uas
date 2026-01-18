@@ -117,20 +117,54 @@
                                 <div class="modal-body">
                                     <div class="mb-3">
                                         <label class="form-label">Status Pengembalian</label>
-                                        <select name="status_pengembalian" class="form-control" required>
+                                        <select name="status_pengembalian" class="form-control" id="status_pengembalian_{{ $pg->id_pengembalian }}" onchange="handleStatusChange({{ $pg->id_pengembalian }})" required>
                                             <option value="pending" {{ $pg->status_pengembalian == 'pending' ? 'selected' : '' }}>Pending</option>
                                             <option value="selesai" {{ $pg->status_pengembalian == 'selesai' ? 'selected' : '' }}>Selesai</option>
                                             <option value="bermasalah" {{ $pg->status_pengembalian == 'bermasalah' ? 'selected' : '' }}>Bermasalah</option>
                                         </select>
                                     </div>
 
-                                    <div class="alert alert-info">
-                                        <small>
-                                            <strong>Catatan:</strong><br>
-                                            - Pending: Menunggu konfirmasi pengembalian<br>
-                                            - Selesai: Mobil telah dikembalikan dengan baik<br>
-                                            - Bermasalah: Ada masalah dengan pengembalian (mobil rusak, keterlambatan, dll)
-                                        </small>
+                                    <!-- Section Denda (Hidden by default) -->
+                                    <div id="denda_section_{{ $pg->id_pengembalian }}" style="display: none; background: #fff3cd; padding: 15px; border-radius: 5px; border: 1px solid #ffecb5;">
+                                        <h6 class="text-warning fw-bold"><i class="bi bi-exclamation-triangle"></i> Detail Masalah</h6>
+                                        
+                                        <div class="mb-3">
+                                            <label class="form-label">Jenis Masalah</label>
+                                            <select name="jenis_denda" id="jenis_denda_{{ $pg->id_pengembalian }}" class="form-control" onchange="handleJenisDendaChange({{ $pg->id_pengembalian }})">
+                                                <option value="">-- Pilih Jenis Masalah --</option>
+                                                <option value="telat">Telat Mengembalikan</option>
+                                                <option value="masalah_unit">Masalah Unit / Kerusakan</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- Input Hari Telat -->
+                                        <div class="mb-3" id="input_hari_telat_{{ $pg->id_pengembalian }}" style="display: none;">
+                                            <label class="form-label">Jumlah Hari Telat</label>
+                                            <div class="input-group">
+                                                <input type="number" name="hari_telat" id="hari_telat_{{ $pg->id_pengembalian }}" class="form-control" min="1" oninput="calculateDendaTelat({{ $pg->id_pengembalian }})">
+                                                <span class="input-group-text">Hari</span>
+                                            </div>
+                                            <small class="text-muted">Denda: Rp 100.000 / hari</small>
+                                        </div>
+
+                                        <!-- Input Keterangan Kerusakan -->
+                                        <div class="mb-3" id="input_keterangan_{{ $pg->id_pengembalian }}" style="display: none;">
+                                            <label class="form-label">Keterangan Kerusakan</label>
+                                            <textarea
+                                                name="keterangan_denda"
+                                                id="keterangan_denda_{{ $pg->id_pengembalian }}"
+                                                class="form-control"
+                                                rows="2"
+                                                placeholder="Jelaskan kerusakan mobil...">
+                                            </textarea>
+                                        </div>
+
+                                        <!-- Input Total Denda -->
+                                        <div class="mb-3" id="input_total_denda_{{ $pg->id_pengembalian }}" style="display: none;">
+                                            <label class="form-label fw-bold">Total Denda (Rp)</label>
+                                            <input type="number" name="total_denda" id="total_denda_{{ $pg->id_pengembalian }}" class="form-control fw-bold" min="0">
+                                            <small class="text-muted" id="note_auto_calc_{{ $pg->id_pengembalian }}" style="display:none;">*Otomatis dihitung dari hari telat</small>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -158,4 +192,78 @@
     </div>
 </div>
 
+
+<script>
+    function handleStatusChange(id) {
+        var status = document.getElementById('status_pengembalian_' + id).value;
+        var dendaSection = document.getElementById('denda_section_' + id);
+        var jenisDendaSelect = document.getElementById('jenis_denda_' + id);
+        
+        if (status === 'bermasalah') {
+            dendaSection.style.display = 'block';
+            jenisDendaSelect.setAttribute('required', 'required');
+            document.getElementById('total_denda_' + id).value = '';
+            document.getElementById('hari_telat_' + id).value = '';
+            document.getElementById('keterangan_denda_' + id).value = '';
+
+        } else {
+            dendaSection.style.display = 'none';
+            jenisDendaSelect.removeAttribute('required');
+            // Reset fields
+            jenisDendaSelect.value = "";
+            handleJenisDendaChange(id);
+        }
+    }
+
+    function handleJenisDendaChange(id) {
+        var jenis = document.getElementById('jenis_denda_' + id).value;
+        var divTelat = document.getElementById('input_hari_telat_' + id);
+        var divKet = document.getElementById('input_keterangan_' + id);
+        var divTotal = document.getElementById('input_total_denda_' + id);
+        var inputTotal = document.getElementById('total_denda_' + id);
+        var noteAuto = document.getElementById('note_auto_calc_' + id);
+        
+        // Hide all first
+        divTelat.style.display = 'none';
+        divKet.style.display = 'none';
+        divTotal.style.display = 'none';
+        inputTotal.removeAttribute('readonly');
+        inputTotal.removeAttribute('required');
+        noteAuto.style.display = 'none';
+
+        if (jenis === 'telat') {
+            divTelat.style.display = 'block';
+            divTotal.style.display = 'block';
+            inputTotal.setAttribute('readonly', 'readonly');
+            inputTotal.setAttribute('required', 'required');
+            noteAuto.style.display = 'block';
+            
+            // Trigger calculation
+            calculateDendaTelat(id);
+            
+            // Set required for hari telat
+            document.getElementById('hari_telat_' + id).setAttribute('required', 'required');
+            
+        } else if (jenis === 'masalah_unit') {
+            divKet.style.display = 'block';
+            divTotal.style.display = 'block';
+            inputTotal.setAttribute('required', 'required');
+            inputTotal.value = ''; // Reset value to allow manual entry
+            
+            document.getElementById('hari_telat_' + id).removeAttribute('required');
+        }
+    }
+
+    function calculateDendaTelat(id) {
+        var hari = document.getElementById('hari_telat_' + id).value;
+        var totalInput = document.getElementById('total_denda_' + id);
+        
+        if (hari && hari > 0) {
+            var total = hari * 100000;
+            totalInput.value = total;
+        } else {
+            totalInput.value = 0;
+        }
+    }
+</script>
 @endsection

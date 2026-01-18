@@ -164,6 +164,29 @@
             font-size: 14px;
         }
 
+        /* Pagination Styling */
+        .pagination-container {
+            border-top: 1px solid #edf2f7;
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+
+        /* Target the flex container inside Laravel's pagination */
+        .pagination-container nav div.d-flex,
+        .pagination-container nav div.flex.justify-between {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        /* Ensure the 'Showing' text and links are spaced apart even when centered */
+        .pagination {
+            margin-bottom: 0;
+            gap: 5px;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .admin-sidebar {
@@ -221,7 +244,7 @@
                         <i class="bi bi-people"></i>
                         Pengguna
                     </a>
-                    <a class="nav-link" href="#">
+                    <a class="nav-link {{ request()->routeIs('admin.laporan.*') ? 'active' : '' }}" href="{{ route('admin.laporan.index') }}">
                         <i class="bi bi-file-earmark-pdf"></i>
                         Laporan
                     </a>
@@ -275,7 +298,7 @@
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    @stack('scripts')
 </body>
 </html>
